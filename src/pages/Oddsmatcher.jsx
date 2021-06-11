@@ -18,7 +18,7 @@ class Oddsmatcher extends Component {
   fetchOdds = async () => {
     try {
       this.setState({ isLoading: true, odds: [] });
-      const response = await fetch("http://localhost:3004/mybet21/oddsmatcher");
+      const response = await fetch("https://the-master-matched-be-new.herokuapp.com/mybet21/oddsmatcher");
       const parsedResponse = await response.json();
       const odds = parsedResponse.map((odd) => {
         return{
