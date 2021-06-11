@@ -1,0 +1,26 @@
+#oddsmatcher-table-container{
+    text-align: center;
+    #oddsmatcher-spinner{
+        margin: 4rem 0;
+        width: 10rem;
+        height: 10rem;
+    }
+
+    table{
+        width: 100%;
+    }
+
+    tbody > tr > td:nth-child(7){
+        background-color: #a6d8ff;
+    }
+    tbody > tr > td:nth-child(8){
+        background-color: #fac9d1;
+    }
+
+    tbody img{
+        max-width: 100px;
+        min-height: 35px;
+    }
+
+    
+}
