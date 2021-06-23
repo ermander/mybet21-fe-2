@@ -20,7 +20,7 @@ const Styles = styled.div`
     th,
     td {
       margin: 0;
-      padding: 0.5rem;
+      padding: 0.1rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
 
@@ -146,11 +146,15 @@ function App({odds}) {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Nazione",
-        accessor: "nation"
+        Header: "Data",
+        accessor: "start_date",
       },
       {
-        Header: "Campionato",
+        Header: "Ora",
+        accessor: "start_time"
+      },
+      {
+        Header: "Nazione/Campionato",
         accessor: "tournament"
       },
       {

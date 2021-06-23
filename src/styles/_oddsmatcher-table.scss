@@ -8,19 +8,21 @@
 
     table{
         width: 100%;
+        td{
+            font-size: 13px;
+            font-weight: 600;
+        }
     }
 
-    tbody > tr > td:nth-child(7){
+    tbody > tr > td:nth-child(8){
         background-color: #a6d8ff;
     }
-    tbody > tr > td:nth-child(8){
+    tbody > tr > td:nth-child(9){
         background-color: #fac9d1;
     }
 
     tbody img{
         max-width: 100px;
         min-height: 35px;
-    }
-
-    
+    }    
 }
