@@ -9,6 +9,8 @@ import OddsmatcherTable from "../components/OddsmatcherTable";
 // Bookmakers Logos
 import { logos } from "../utilities/bookmakerLogos";
 
+
+
 class Oddsmatcher extends Component {
   state = {
     isLoading: true,
@@ -22,7 +24,7 @@ class Oddsmatcher extends Component {
     try {
       this.setState({ isLoading: true, odds: [] });
       const response = await fetch(
-        "https://the-master-matched-be-new.herokuapp.com/mybet21/oddsmatcher"
+        "https://odds-and-db-be-server.herokuapp.com//mybet21/oddsmatcher"
       );
       const parsedResponse = await response.json();
       const odds = parsedResponse.map((odd) => {
@@ -31,7 +33,6 @@ class Oddsmatcher extends Component {
         const layStake = (odd.odd_one * bet) / (odd.odd_two - commission);
         const rawRating = (1 - commission) * layStake;
         const rating = rawRating.toFixed(2);
-        console.log(odd.odd_one_type);
         return {
           ...odd,
           book_one_image: (
