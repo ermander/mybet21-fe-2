@@ -9,8 +9,6 @@ import OddsmatcherTable from "../components/OddsmatcherTable";
 // Bookmakers Logos
 import { logos } from "../utilities/bookmakerLogos";
 
-
-
 class Oddsmatcher extends Component {
   state = {
     isLoading: true,
@@ -18,6 +16,7 @@ class Oddsmatcher extends Component {
     temporaryOdds: [],
     firstBookmaker: "",
     showFilterModal: false,
+    history: [],
   };
 
   fetchOdds = async () => {
@@ -48,13 +47,17 @@ class Oddsmatcher extends Component {
       odds.sort((a, b) => {
         return b.roi - a.roi;
       });
-      console.log(odds[1].book_one);
+
+      // Adding history to the for every match
+      const rawHistory = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/history")
+      const history = await rawHistory.json()
+
+
       this.setState({ isLoading: false, odds: odds, temporaryOdds: odds });
     } catch (error) {
       console.log(error);
     }
   };
-
   // Odds filter based on first bookmaker preference
   firstBookmaker = (firstBookmaker) => {
     let newOdds = this.state.odds;
