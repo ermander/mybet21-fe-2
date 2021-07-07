@@ -57,20 +57,6 @@ class Oddsmatcher extends Component {
           odd.historyInfo = rawInfo[0];
           let data = odd.historyInfo[odd.odd_one_type];
           console.log(data)
-          if (data !== undefined && data[0] !== 0) {
-            data = data[0];
-          }
-          if(data !== undefined && data[0] === 0){
-            let whileController = true
-            let counter = 0
-            while(whileController){
-              if(data[counter] === 0) counter = counter + 1 
-              if(data[counter] !== 0){
-                data = data[counter]
-                whileController = false
-              }
-            }
-          }
           return {
             ...odd,
             quotaIniziale: "@" + data,
