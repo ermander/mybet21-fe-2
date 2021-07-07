@@ -22,7 +22,7 @@ class Oddsmatcher extends Component {
   fetchOdds = async () => {
     try {
       this.setState({ isLoading: true, odds: [] });
-      const response = await fetch("https://odds-and-db-be-server.herokuapp.com/oddsmatcher");
+      const response = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/oddsmatcher");
       const parsedResponse = await response.json();
       let odds = parsedResponse.map((odd) => {
         const bet = 100;
@@ -47,7 +47,7 @@ class Oddsmatcher extends Component {
       });
 
       // Adding history to the for every match
-      const rawHistory = await fetch("https://odds-and-db-be-server.herokuapp.com/history");
+      const rawHistory = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/history");
       const history = await rawHistory.json();
       odds = odds.map((odd, i) => {
         const rawInfo = history.filter(
