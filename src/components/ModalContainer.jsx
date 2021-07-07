@@ -38,16 +38,8 @@ class ModalContainer extends Component {
             </Form.Group>
           </Col>
           <Col xs={3}>
-            <Button>
-              Filtra per Data
-              <FontAwesomeIcon icon={faRedo} />
-            </Button>
           </Col>
           <Col xs={3}>
-            <Button>
-              Filtra per Rating
-              <FontAwesomeIcon icon={faRedo} />
-            </Button>
           </Col>
         </Row>
       </div>
