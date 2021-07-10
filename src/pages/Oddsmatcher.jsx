@@ -8,6 +8,8 @@ import OddsmatcherTable from "../components/OddsmatcherTable";
 
 // Bookmakers Logos
 import { logos } from "../utilities/bookmakerLogos";
+import { checkComplementary } from "../utilities/functions"
+import InitialOdds from "../components/InitialOdds";
 
 class Oddsmatcher extends Component {
   state = {
@@ -56,10 +58,13 @@ class Oddsmatcher extends Component {
         if (rawInfo !== undefined) {
           odd.historyInfo = rawInfo[0];
           let data = odd.historyInfo[odd.odd_one_type];
-          console.log(data)
+          data === undefined ? data = "Non Disponibile" : data = data
+          let complementaryData = checkComplementary(odd.odd_one_type, odd.historyInfo, odds, odd.home, odd.away, odd.book_one)
+
           return {
             ...odd,
             quotaIniziale: "@" + data,
+            complementaryData: complementaryData
           };
         }
       });

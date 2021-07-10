@@ -189,7 +189,7 @@ function App({odds}) {
         accessor: "tableRoi"
       },
       {
-        Header: "Quota Iniziale",
+        Header: "Quota Iniziali",
         accessor: "quotaIniziale"
       }
     ],
