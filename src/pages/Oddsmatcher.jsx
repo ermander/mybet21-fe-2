@@ -63,7 +63,7 @@ class Oddsmatcher extends Component {
 
           return {
             ...odd,
-            quotaIniziale: "@" + data,
+            quotaIniziale: (complementaryData === undefined ? "@" + data : <InitialOdds info={complementaryData} />)/*"@" + data*/,
             complementaryData: complementaryData
           };
         }

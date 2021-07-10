@@ -1,8 +1,13 @@
-#main-container{
-    max-width: 10%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    .odds-info-container{
-
+#main-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  .odds-info-container {
+    width: 100%;
+    p {
+      width: 100%;
     }
+    p:nth-child(2) {
+      font-size: 10px;
+    }
+  }
 }
