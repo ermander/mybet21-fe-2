@@ -1,6 +1,6 @@
-import React from 'react'
-import styled from 'styled-components'
-import { useTable, usePagination } from 'react-table'
+import React from "react";
+import styled from "styled-components";
+import { useTable, usePagination } from "react-table";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -28,7 +28,7 @@ const Styles = styled.div`
   .pagination {
     padding: 0.5rem;
   }
-`
+`;
 
 function Table({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
@@ -57,31 +57,33 @@ function Table({ columns, data }) {
       initialState: { pageIndex: 0 },
     },
     usePagination
-  )
+  );
 
   // Render the UI for your table
   return (
     <>
       <table {...getTableProps()}>
         <thead>
-          {headerGroups.map(headerGroup => (
+          {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+              {headerGroup.headers.map((column) => (
+                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
           {page.map((row, i) => {
-            prepareRow(row)
+            prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                {row.cells.map((cell) => {
+                  return (
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  );
                 })}
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
@@ -91,42 +93,42 @@ function Table({ columns, data }) {
       */}
       <div className="pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
+          {"<<"}
+        </button>{" "}
         <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
+          {"<"}
+        </button>{" "}
         <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
+          {">"}
+        </button>{" "}
         <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
+          {">>"}
+        </button>{" "}
         <span>
-          Page{' '}
+          Page{" "}
           <strong>
             {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
+          </strong>{" "}
         </span>
         <span>
-          | Go to page:{' '}
+          | Go to page:{" "}
           <input
             type="number"
             defaultValue={pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              gotoPage(page);
             }}
-            style={{ width: '100px' }}
+            style={{ width: "100px" }}
           />
-        </span>{' '}
+        </span>{" "}
         <select
           value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value))
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
           }}
         >
-          {[10, 20, 30, 40, 50].map(pageSize => (
+          {[10, 20, 30, 40, 50].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>
@@ -134,10 +136,10 @@ function Table({ columns, data }) {
         </select>
       </div>
     </>
-  )
+  );
 }
 
-function App({odds}) {
+function App(props) {
   const columns = React.useMemo(
     () => [
       {
@@ -146,63 +148,63 @@ function App({odds}) {
       },
       {
         Header: "Ora",
-        accessor: "start_time"
+        accessor: "start_time",
       },
       {
         Header: "Nazione/Campionato",
-        accessor: "tournament"
+        accessor: "tournament",
       },
       {
         Header: "Evento",
-        accessor: "event"
+        accessor: "event",
       },
       {
         Header: "Mercato",
-        accessor: "market"
+        accessor: "market",
       },
       {
         Header: "Book 1",
-        accessor: "book_one_image"
+        accessor: "book_one_image",
       },
       {
         Header: "Tipo 1",
-        accessor: "odd_one_type"
+        accessor: "odd_one_type",
       },
       {
         Header: "Quota 1",
-        accessor: "odd_one"
+        accessor: "odd_one",
       },
       {
         Header: "Quota 2",
-        accessor: "odd_two"
+        accessor: "odd_two",
       },
       {
         Header: "Tipo 2",
-        accessor: "odd_two_type"
+        accessor: "odd_two_type",
       },
       {
         Header: "Book 2",
-        accessor: "book_two_image"
+        accessor: "book_two_image",
       },
       {
         Header: "Rating %",
-        accessor: "tableRoi"
+        accessor: "tableRoi",
       },
       {
         Header: "Quota Iniziali",
-        accessor: "quotaIniziale"
-      }
+        accessor: "quotaIniziale",
+      },
     ],
     []
-  )
+  );
 
-  const data = odds
+  const data = props.odds;
 
   return (
     <Styles>
       <Table columns={columns} data={data} />
     </Styles>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Row,
@@ -8,491 +8,554 @@ import {
   InputGroup,
   FormControl,
 } from "react-bootstrap";
+import { connect } from "react-redux";
 import "../styles/_filters-modal.scss";
+import { months } from "../utilities/months";
 
-class FiltersModal extends Component {
-  state = {
+const mapStateToProps = (state) => state;
+const mapDispatchToProps = (dispatch) => ({
+  openFilterModal: () =>
+    dispatch({
+      type: "SHOW_FILTER_MODAL",
+    }),
+  setFilters: (payload) =>
+    dispatch({
+      type: "SET_FILTERS",
+      payload: payload,
+    }),
+  prova: (options) => dispatch(handleFilters(options)),
+});
+
+const handleFilters = (options) => {
+  return async (dispatch) => {
+    const response = await fetch("http://localhost:3004/mybet21/oddsmatcher", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options)
+    });
+    const parsedResponse = await response.json();
+    console.log("The response is: ", parsedResponse);
+  };
+};
+
+function FilterModal(props) {
+  // FIRST TIME STATUS
+  const [marketStatusFullTime, setMarketStatusFullTime] = useState({
     allMarkets: true,
     oneXTwo: false,
     underOver: false,
-    goalNogoal: false,
+    goalNoGoal: false,
+  });
+  const [marketStatusFirstTime, setMarketStatusFirstTime] = useState({
     allMarketsFirstTime: true,
     oneXTwoFirstTime: false,
     underOverFirstTime: false,
-    goalNogoalFirstTime: false,
+    goalNoGoalFirstTime: false,
+  });
+  // SECOND TIME STATUS
+  const [marketStatusSecondTime, setMarketStatusSecondTime] = useState({
     allMarketsSecondTime: true,
     oneXTwoSecondTime: false,
     underOverSecondTime: false,
-    goalNogoalSecondTime: false,
-    minOdd: "",
-    maxOdd: "",
-    startDate: "",
-    endDate: "",
-    startTime: "",
-    endTime: "",
+    goalNoGoalSecondTime: false,
+  });
+  // MIN AND MAX ODD STATUS
+  const [minOdd, setMinOdd] = useState("");
+  const [maxOdd, setMaxOdd] = useState("");
+  // INITIAL DATE STATUS
+  const [initialDate, setInitialDate] = useState();
+  const [finalDate, setFinalDate] = useState();
+  const [initialHour, setInitialHour] = useState();
+  const [finalHour, setFinalHour] = useState();
+
+  const handleSetFilter = (options) => {
+    console.log(options);
+    props.setFilters(options);
   };
 
-  setMarketFilters = (market) => {
+  const firstDateSet = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let finalMonth = month + 1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minutes = date.getUTCMinutes();
+    console.log(hour, minutes);
+    if (month <= 9) {
+      for (let i = 0; i < 9; i++) {
+        if (month === i) month = `0${month}`;
+      }
+    }
+    if (finalMonth <= 9) {
+      for (let i = 0; i < 9; i++) {
+        if (finalMonth === i) finalMonth = `0${finalMonth}`;
+      }
+    }
+    if (day <= 9) {
+      for (let i = 0; i < 9; i++) {
+        if (day === i) day = `0${day}`;
+      }
+    }
+    const newInitialDate = `${year}-${month}-${day}`;
+    const newFinalDate = `${year}-${finalMonth}-${day}`;
+    const newInitialAndFinalHour = `${hour}:${minutes}`;
+    setInitialDate(newInitialDate);
+    setFinalDate(newFinalDate);
+    setInitialHour(newInitialAndFinalHour);
+    setFinalHour(newInitialAndFinalHour);
+  };
+
+  const setMarketsFilters = (market) => {
     if (market === "allMarkets") {
-      this.state.allMarkets === true
-        ? this.setState({
+      marketStatusFullTime.allMarkets === true
+        ? setMarketStatusFullTime({
             allMarkets: false,
-            oneXTwo: false,
-            underOver: false,
-            goalNogoal: false,
+            oneXTwo: true,
+            underOver: true,
+            goalNoGoal: true,
           })
-        : this.setState({
+        : setMarketStatusFullTime({
             allMarkets: true,
             oneXTwo: false,
             underOver: false,
-            goalNogoal: false,
+            goalNoGoal: false,
           });
     }
     if (market === "oneXTwo") {
-      this.state.oneXTwo === true
-        ? this.setState({ allMarkets: false, oneXTwo: false })
-        : this.setState({ allMarkets: false, oneXTwo: true });
+      marketStatusFullTime.oneXTwo === true
+        ? setMarketStatusFullTime({
+            ...marketStatusFullTime,
+            allMarkets: false,
+            oneXTwo: false,
+          })
+        : setMarketStatusFullTime({
+            ...marketStatusFullTime,
+            allMarkets: false,
+            oneXTwo: true,
+          });
     }
     if (market === "underOver") {
-      this.state.underOver === true
-        ? this.setState({ allMarkets: false, underOver: false })
-        : this.setState({ allMarkets: false, underOver: true });
+      marketStatusFullTime.underOver === true
+        ? setMarketStatusFullTime({
+            ...marketStatusFullTime,
+            allMarkets: false,
+            underOver: false,
+          })
+        : setMarketStatusFullTime({
+            ...marketStatusFullTime,
+            allMarkets: false,
+            underOver: true,
+          });
     }
-    if (market === "goalNogoal") {
-      this.state.goalNogoal === true
-        ? this.setState({ allMarkets: false, goalNogoal: false })
-        : this.setState({ allMarkets: false, goalNogoal: true });
+    if (market === "goalNoGoal") {
+      marketStatusFullTime.goalNoGoal === true
+        ? setMarketStatusFullTime({
+            ...marketStatusFullTime,
+            allMarkets: false,
+            goalNoGoal: false,
+          })
+        : setMarketStatusFullTime({
+            ...marketStatusFullTime,
+            allMarkets: false,
+            goalNoGoal: true,
+          });
     }
 
     if (market === "allMarketsFirstTime") {
-      this.state.allMarketsFirstTime === true
-        ? this.setState({
+      marketStatusFirstTime.allMarketsFirstTime === true
+        ? setMarketStatusFirstTime({
             allMarketsFirstTime: false,
             oneXTwoFirstTime: false,
             underOverFirstTime: false,
-            goalNogoalFirstTime: false,
+            goalNoGoalFirstTime: false,
           })
-        : this.setState({
+        : setMarketStatusFirstTime({
             allMarketsFirstTime: true,
             oneXTwoFirstTime: false,
             underOverFirstTime: false,
-            goalNogoalFirstTime: false,
+            goalNoGoalFirstTime: false,
           });
     }
     if (market === "oneXTwoFirstTime") {
-      this.state.oneXTwoFirstTime === true
-        ? this.setState({ allMarketsFirstTime: false, oneXTwoFirstTime: false })
-        : this.setState({ allMarketsFirstTime: false, oneXTwoFirstTime: true });
+      marketStatusFirstTime.oneXTwoFirstTime === true
+        ? setMarketStatusFirstTime({
+            ...marketStatusFirstTime,
+            allMarketsFirstTime: false,
+            oneXTwoFirstTime: false,
+          })
+        : setMarketStatusFirstTime({
+            ...marketStatusFirstTime,
+            allMarketsFirstTime: false,
+            oneXTwoFirstTime: true,
+          });
     }
     if (market === "underOverFirstTime") {
-      this.state.underOverFirstTime === true
-        ? this.setState({
+      marketStatusFirstTime.underOverFirstTime === true
+        ? setMarketStatusFirstTime({
+            ...marketStatusFirstTime,
             allMarketsFirstTime: false,
             underOverFirstTime: false,
           })
-        : this.setState({
+        : setMarketStatusFirstTime({
+            ...marketStatusFirstTime,
             allMarketsFirstTime: false,
             underOverFirstTime: true,
           });
     }
-    if (market === "goalNogoalFirstTime") {
-      this.state.goalNogoalFirstTime === true
-        ? this.setState({
+    if (market === "goalNoGoalFirstTime") {
+      marketStatusFirstTime.goalNoGoalFirstTime === true
+        ? setMarketStatusFirstTime({
+            ...marketStatusFirstTime,
             allMarketsFirstTime: false,
-            goalNogoalFirstTime: false,
+            goalNoGoalFirstTime: false,
           })
-        : this.setState({
+        : setMarketStatusFirstTime({
+            ...marketStatusFirstTime,
             allMarketsFirstTime: false,
-            goalNogoalFirstTime: true,
+            goalNoGoalFirstTime: true,
           });
     }
 
     if (market === "allMarketsSecondTime") {
-      this.state.allMarketsSecondTime === true
-        ? this.setState({
+      marketStatusSecondTime.allMarketsSecondTime === true
+        ? setMarketStatusSecondTime({
             allMarketsSecondTime: false,
             oneXTwoSecondTime: false,
             underOverSecondTime: false,
-            goalNogoalSecondTime: false,
+            goalNoGoalSecondTime: false,
           })
-        : this.setState({
+        : setMarketStatusSecondTime({
             allMarketsSecondTime: true,
             oneXTwoSecondTime: false,
             underOverSecondTime: false,
-            goalNogoalSecondTime: false,
+            goalNoGoalSecondTime: false,
           });
     }
     if (market === "oneXTwoSecondTime") {
-      this.state.oneXTwoSecondTime === true
-        ? this.setState({
+      marketStatusSecondTime.oneXTwoSecondTime === true
+        ? setMarketStatusSecondTime({
+            ...marketStatusSecondTime,
             allMarketsSecondTime: false,
             oneXTwoSecondTime: false,
           })
-        : this.setState({
+        : setMarketStatusSecondTime({
+            ...marketStatusSecondTime,
             allMarketsSecondTime: false,
             oneXTwoSecondTime: true,
           });
     }
     if (market === "underOverSecondTime") {
-      this.state.underOveSecondTimer === true
-        ? this.setState({
+      marketStatusSecondTime.underOveSecondTimer === true
+        ? setMarketStatusSecondTime({
+            ...marketStatusSecondTime,
             allMarketsSecondTime: false,
             underOverSecondTime: false,
           })
-        : this.setState({
+        : setMarketStatusSecondTime({
+            ...marketStatusSecondTime,
             allMarketsSecondTime: false,
             underOverSecondTime: true,
           });
     }
-    if (market === "goalNogoalSecondTime") {
-      this.state.goalNogoalSecondTime === true
-        ? this.setState({
+    if (market === "goalNoGoalSecondTime") {
+      marketStatusSecondTime.goalNoGoalSecondTime === true
+        ? setMarketStatusSecondTime({
+            ...marketStatusSecondTime,
             allMarketsSecondTime: false,
-            goalNogoalSecondTime: false,
+            goalNoGoalSecondTime: false,
           })
-        : this.setState({
+        : setMarketStatusSecondTime({
+            ...marketStatusSecondTime,
             allMarketsSecondTime: false,
-            goalNogoalSecondTime: true,
+            goalNoGoalSecondTime: true,
           });
     }
   };
-  render() {
-    return (
-      <div>
-        <Modal
-          show={this.props.showFilterModal}
-          onHide={this.props.showFilterModal}
-        >
-          <Modal.Header>
-            <h3>Filtri Di Ricerca</h3>
-          </Modal.Header>
-          <Modal.Body>
-            <Row className="no-gutters">
-              <Col xs={12} md={2}>
-                <div className="filters-modal-form-col">
-                  <h5>Mercati Esito Finale</h5>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.allMarkets}
-                      onChange={() => this.setMarketFilters("allMarkets")}
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>Tutti</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.oneXTwo}
-                      onChange={() => this.setMarketFilters("oneXTwo")}
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>1X2</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.underOver}
-                      onChange={() => this.setMarketFilters("underOver")}
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>U/O</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.goalNogoal}
-                      onChange={() => this.setMarketFilters("goalNogoal")}
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>GG/NG</span>
-                    </Form.Check>
-                  </div>
+  useEffect(() => {
+    firstDateSet();
+  }, []);
+  return (
+    <div>
+      <Modal show={props.showFilterModal}>
+        <Modal.Header>
+          <h3>Filtri Di Ricerca</h3>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="no-gutters">
+            <Col xs={12} md={2}>
+              <div className="filters-modal-form-col">
+                <h5>Mercati Esito Finale</h5>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFullTime.allMarkets}
+                    onChange={() => setMarketsFilters("allMarkets")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>Tutti</span>
+                  </Form.Check>
                 </div>
-              </Col>
-              <Col xs={12} md={2}>
-                <div className="filters-modal-form-col">
-                  <h5>Mercati Esito 1°T</h5>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.allMarketsFirstTime}
-                      onChange={() =>
-                        this.setMarketFilters("allMarketsFirstTime")
-                      }
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>Tutti</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.oneXTwoFirstTime}
-                      onChange={() => this.setMarketFilters("oneXTwoFirstTime")}
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>1X2</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.underOverFirstTime}
-                      onChange={() =>
-                        this.setMarketFilters("underOverFirstTime")
-                      }
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>U/O</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.goalNogoalFirstTime}
-                      onChange={() =>
-                        this.setMarketFilters("goalNogoalFirstTime")
-                      }
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>GG/NG</span>
-                    </Form.Check>
-                  </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFullTime.oneXTwo}
+                    onChange={() => setMarketsFilters("oneXTwo")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>1X2</span>
+                  </Form.Check>
                 </div>
-              </Col>
-              <Col xs={12} md={2}>
-                <div className="filters-modal-form-col">
-                  <h5>Mercati Esito 2°T</h5>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.allMarketsSecondTime}
-                      onChange={() =>
-                        this.setMarketFilters("allMarketsSecondTime")
-                      }
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>Tutti</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.oneXTwoSecondTime}
-                      onChange={() =>
-                        this.setMarketFilters("oneXTwoSecondTime")
-                      }
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>1X2</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.underOverSecondTime}
-                      onChange={() =>
-                        this.setMarketFilters("underOverSecondTime")
-                      }
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>U/O</span>
-                    </Form.Check>
-                  </div>
-                  <div>
-                    <Form.Check
-                      inline
-                      checked={this.state.goalNogoalSecondTime}
-                      onChange={() =>
-                        this.setMarketFilters("goalNogoalSecondTime")
-                      }
-                    ></Form.Check>
-                    <Form.Check inline className="text-form">
-                      <span>GG/NG</span>
-                    </Form.Check>
-                  </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFullTime.underOver}
+                    onChange={() => setMarketsFilters("underOver")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>U/O</span>
+                  </Form.Check>
                 </div>
-              </Col>
-              <Col xs={12} md={6}>
-                <div className="filters-modal-form-col">
-                  <h5>Data, Ora e Quote</h5>
-                  <Row
-                    className="no-gutters"
-                    style={{ marginBottom: "0.5rem" }}
-                  >
-                    <Col xs={2}>
-                      <strong>Inizio:</strong>
-                    </Col>
-                    <Col xs={7}>
-                      <InputGroup>
-                        <FormControl
-                          onChange={(e) =>
-                            this.setState({ startDate: e.currentTarget.value })
-                          }
-                          type="date"
-                        />
-                      </InputGroup>
-                    </Col>
-                    <Col xs={3}>
-                      <InputGroup>
-                        <FormControl
-                          onChange={(e) =>
-                            this.setState({ startTime: e.currentTarget.value })
-                          }
-                          type="time"
-                        />
-                      </InputGroup>
-                    </Col>
-                  </Row>
-                  <Row
-                    className="no-gutters"
-                    style={{ marginBottom: "0.5rem" }}
-                  >
-                    <Col xs={2}>
-                      <strong>Fine:</strong>
-                    </Col>
-                    <Col xs={7}>
-                      <InputGroup>
-                        <FormControl
-                          onChange={(e) =>
-                            this.setState({ endDate: e.currentTarget.value })
-                          }
-                          type="date"
-                        />
-                      </InputGroup>
-                    </Col>
-                    <Col xs={3}>
-                      <InputGroup>
-                        <FormControl
-                          onChange={(e) =>
-                            this.setState({ endTime: e.currentTarget.value })
-                          }
-                          type="time"
-                        />
-                      </InputGroup>
-                    </Col>
-                  </Row>
-                  <Row className="no-gutters">
-                    <Col xs={2}>
-                      <strong>Quota:</strong>
-                    </Col>
-                    <Col xs={5}>
-                      <InputGroup>
-                        <FormControl
-                          onChange={(e) =>
-                            this.setState({ minOdd: e.currentTarget.value })
-                          }
-                          type="number"
-                          placeholder="Quota Min."
-                        />
-                      </InputGroup>
-                    </Col>
-                    <Col xs={5}>
-                      <InputGroup>
-                        <FormControl
-                          onChange={(e) =>
-                            this.setState({ maxOdd: e.currentTarget.value })
-                          }
-                          type="number"
-                          placeholder="Quota Max."
-                        />
-                      </InputGroup>
-                    </Col>
-                  </Row>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFullTime.goalNoGoal}
+                    onChange={() => setMarketsFilters("goalNoGoal")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>GG/NG</span>
+                  </Form.Check>
                 </div>
-              </Col>
-            </Row>
-          </Modal.Body>
-          <Modal.Footer>
-            <Row className="no-gutters">
-              <Col xs={4}>
-                <Button
-                  variant="success"
-                  onClick={() =>
-                    this.props.setFilters({
-                      filters: true,
-                      allMarkets: this.state.allMarkets,
-                      oneXTwo: this.state.oneXTwo,
-                      underOver: this.state.underOver,
-                      goalNogoal: this.state.goalNogoal,
-                      allMarketsFirstTime: this.state.allMarketsFirstTime,
-                      oneXTwoFirstTime: this.state.oneXTwoFirstTime,
-                      underOverFirstTime: this.state.underOverFirstTime,
-                      goalNogoalFirstTime: this.state.goalNogoalFirstTime,
-                      allMarketsSecondTime: this.state.allMarketsSecondTime,
-                      oneXTwoSecondTime: this.state.oneXTwoSecondTime,
-                      underOverSecondTime: this.state.underOverSecondTime,
-                      goalNogoalSecondTime: this.state.goalNogoalSecondTime,
-                      minOdd: this.state.minOdd,
-                      maxOdd: this.state.maxOdd,
-                      startDate: this.state.startDate,
-                      endDate: this.state.endDate,
-                      startTime: this.state.startTime,
-                      endTime: this.state.endTime,
-                    })
-                  }
-                >
-                  Applica
-                </Button>
-              </Col>
-              <Col xs={4}>
-                <Button
-                  variant="dark"
-                  onClick={() =>
-                    this.props.setFilters({
-                      filters: false,
-                      reset: false,
-                    })
-                  }
-                >
-                  Chiudi
-                </Button>
-              </Col>
-              <Col xs={4}>
-                <Button
-                  variant="danger"
-                  onClick={() =>
-                    this.props.setFilters(
-                      {
-                        filters: false,
-                        reset: true,
-                      },
-                      this.setState({
-                        allMarkets: true,
-                        oneXTwo: false,
-                        underOver: false,
-                        goalNogoal: false,
-                        allMarketsFirstTime: true,
-                        oneXTwoFirstTime: false,
-                        underOverFirstTime: false,
-                        goalNogoalFirstTime: false,
-                        allMarketsSecondTime: true,
-                        oneXTwoSecondTime: false,
-                        underOverSecondTime: false,
-                        goalNogoalSecondTime: false,
-                        minOdd: "",
-                        maxOdd: "",
-                        startDate: "",
-                        endDate: "",
-                        startTime: "",
-                        endTime: "",
-                      })
-                    )
-                  }
-                >
-                  Resetta
-                </Button>
-              </Col>
-            </Row>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    );
-  }
+              </div>
+            </Col>
+            <Col xs={12} md={2}>
+              <div className="filters-modal-form-col">
+                <h5>Mercati Esito 1°T</h5>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFirstTime.allMarketsFirstTime}
+                    onChange={() => setMarketsFilters("allMarketsFirstTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>Tutti</span>
+                  </Form.Check>
+                </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFirstTime.oneXTwoFirstTime}
+                    onChange={() => setMarketsFilters("oneXTwoFirstTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>1X2</span>
+                  </Form.Check>
+                </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFirstTime.underOverFirstTime}
+                    onChange={() => setMarketsFilters("underOverFirstTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>U/O</span>
+                  </Form.Check>
+                </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusFirstTime.goalNoGoalFirstTime}
+                    onChange={() => setMarketsFilters("goalNoGoalFirstTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>GG/NG</span>
+                  </Form.Check>
+                </div>
+              </div>
+            </Col>
+            <Col xs={12} md={2}>
+              <div className="filters-modal-form-col">
+                <h5>Mercati Esito 2°T</h5>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusSecondTime.allMarketsSecondTime}
+                    onChange={() => setMarketsFilters("allMarketsSecondTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>Tutti</span>
+                  </Form.Check>
+                </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusSecondTime.oneXTwoSecondTime}
+                    onChange={() => setMarketsFilters("oneXTwoSecondTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>1X2</span>
+                  </Form.Check>
+                </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusSecondTime.underOverSecondTime}
+                    onChange={() => setMarketsFilters("underOverSecondTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>U/O</span>
+                  </Form.Check>
+                </div>
+                <div>
+                  <Form.Check
+                    inline
+                    checked={marketStatusSecondTime.goalNoGoalSecondTime}
+                    onChange={() => setMarketsFilters("goalNoGoalSecondTime")}
+                  ></Form.Check>
+                  <Form.Check inline className="text-form">
+                    <span>GG/NG</span>
+                  </Form.Check>
+                </div>
+              </div>
+            </Col>
+            <Col xs={12} md={6}>
+              <div className="filters-modal-form-col">
+                <h5>Data, Ora e Quote</h5>
+                <Row className="no-gutters" style={{ marginBottom: "0.5rem" }}>
+                  <Col xs={2}>
+                    <strong>Inizio:</strong>
+                  </Col>
+                  <Col xs={7}>
+                    <InputGroup>
+                      <FormControl
+                        value={initialDate}
+                        onChange={(e) => setInitialDate(e.currentTarget.value)}
+                        type="date"
+                      />
+                    </InputGroup>
+                  </Col>
+                  <Col xs={3}>
+                    <InputGroup>
+                      <FormControl
+                        value={initialHour}
+                        onChange={(e) => setInitialHour(e.currentTarget.value)}
+                        type="time"
+                      />
+                    </InputGroup>
+                  </Col>
+                </Row>
+                <Row className="no-gutters" style={{ marginBottom: "0.5rem" }}>
+                  <Col xs={2}>
+                    <strong>Fine:</strong>
+                  </Col>
+                  <Col xs={7}>
+                    <InputGroup>
+                      <FormControl
+                        value={finalDate}
+                        onChange={(e) => setFinalDate(e.currentTarget.value)}
+                        type="date"
+                      />
+                    </InputGroup>
+                  </Col>
+                  <Col xs={3}>
+                    <InputGroup>
+                      <FormControl
+                        value={finalHour}
+                        onChange={(e) => setFinalHour(e.currentTarget.value)}
+                        type="time"
+                      />
+                    </InputGroup>
+                  </Col>
+                </Row>
+                <Row className="no-gutters">
+                  <Col xs={2}>
+                    <strong>Quota:</strong>
+                  </Col>
+                  <Col xs={5}>
+                    <InputGroup>
+                      <FormControl
+                        onChange={(e) =>
+                          setMinOdd({
+                            minOdd: parseFloat(e.currentTarget.value),
+                          })
+                        }
+                        type="number"
+                        placeholder="Quota Min."
+                      />
+                    </InputGroup>
+                  </Col>
+                  <Col xs={5}>
+                    <InputGroup>
+                      <FormControl
+                        onChange={(e) =>
+                          setMinOdd({
+                            maxOdd: parseFloat(e.currentTarget.value),
+                          })
+                        }
+                        type="number"
+                        placeholder="Quota Max."
+                      />
+                    </InputGroup>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Row className="no-gutters">
+            <Col xs={4}>
+              <Button
+                variant="success"
+                onClick={ () => props.prova({
+                   //FULL TIME
+                    allMarkets: marketStatusFullTime.allMarkets,
+                    oneXTwo: marketStatusFullTime.oneXTwo,
+                    underOver: marketStatusFullTime.underOver,
+                    goalNoGoal: marketStatusFullTime.goalNoGoal,
+                    // FIRST TIME
+                    allMarketsFirstTime:
+                      marketStatusFirstTime.allMarketsFirstTime,
+                    oneXTwoFirstTime: marketStatusFirstTime.oneXTwoFirstTime,
+                    underOverFirstTime:
+                      marketStatusFirstTime.underOverFirstTime,
+                    goalNoGoalFirstTime:
+                      marketStatusFirstTime.goalNoGoalFirstTime,
+                    // SECOND TIME
+                    allMarketsSecondTime:
+                      marketStatusSecondTime.allMarketsSecondTime,
+                    oneXTwoSecondTime: marketStatusSecondTime.oneXTwoSecondTime,
+                    underOverSecondTime:
+                      marketStatusSecondTime.underOverSecondTime,
+                    goalNoGoalSecondTime:
+                      marketStatusSecondTime.goalNoGoalSecondTime,
+                    minOdd: minOdd,
+                    maxOdd: maxOdd,
+                    initialDate: initialDate,
+                    finalDate: finalDate,
+                    initialHour: initialHour,
+                    finalHour: finalHour,
+                })
+                }
+              >
+                Applica
+              </Button>
+            </Col>
+            <Col xs={4}>
+              <Button variant="dark" onClick={() => props.openFilterModal()}>
+                Chiudi
+              </Button>
+            </Col>
+            <Col xs={4}>
+              <Button variant="danger" onClick={() => props.openFilterModal()}>
+                Resetta
+              </Button>
+            </Col>
+          </Row>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
 }
 
-export default FiltersModal;
+export default connect(mapStateToProps, mapDispatchToProps)(FilterModal);

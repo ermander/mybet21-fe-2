@@ -16,7 +16,6 @@ export const checkComplementary = (
         odd.home === home && odd.away === away && odd.book_one === bookOne
     );
 
-    console.log(matches, " qua")
     let one = matches.filter((match) => match.odd_one_type === "1");
     let x = matches.filter((match) => match.odd_one_type === "x");
     let two = matches.filter((match) => match.odd_one_type === "2");
@@ -254,7 +253,6 @@ export const checkComplementary = (
     let over = matches.filter((match) => match.odd_one_type === "O3.5_t1");
     under = under[0]["odd_one"];
     over = over[0]["odd_one"];
-    console.log(under, over);
     return {
       underHistory,
       overHistory,
