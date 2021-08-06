@@ -12,146 +12,34 @@ import { fetchOdds, fetchHistory } from "../functions/fetchOdds";
 
 const mapStateToProps = (state) => state;
 const mapDispatchToProps = (dispatch) => ({
+  handleFetchOdds: () => dispatch(mainFetchOdds()),
 });
 
+const mainFetchOdds = () => {
+  return async (dispatch) => {
+    dispatch({
+      type: "SET_MAIN_ODDS",
+      payload: [],
+    });
+    dispatch({
+      type: "IS_LOADING",
+      payload: true,
+    });
+    let odds = await fetchOdds();
+    odds = odds.odds;
+    dispatch({
+      type: "SET_MAIN_ODDS",
+      payload: odds,
+    });
+    dispatch({
+      type: "IS_LOADING",
+      payload: false,
+    });
+  };
+};
 
 function OddsMatcher(props) {
-  const [odds, setOdds] = useState([])
-  const [temporaryOdds, setTemporaryOdds] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  const handleFetchOdds = async () => {
-    setIsLoading(true)
-    const odds = await fetchOdds();
-    const history = await fetchHistory()
-    console.log(odds.odds)
-    console.log("Odds are here")
-    setOdds(odds.odds)
-    setTemporaryOdds(odds.odds)
-    console.log("Stato", temporaryOdds, odds)
-    setIsLoading(false)
-  };
-
-  // // Odds filter based on first bookmaker preference
-  // firstBookmaker = (firstBookmaker) => {
-  //   let newOdds = this.state.odds;
-  //   this.setState({ firstBookmaker: firstBookmaker });
-  //   if (firstBookmaker !== ("" || "Bookmakers")) {
-  //     if (firstBookmaker === "MacaoWin") {
-  //       newOdds = newOdds.filter(
-  //         (odd) => (odd.book_one || odd.book_two) === "macao"
-  //       );
-  //     }
-  //     if (firstBookmaker === "SirPlay") {
-  //       newOdds = newOdds.filter(
-  //         (odd) => (odd.book_one || odd.book_two) === "sirplay"
-  //       );
-  //     }
-  //   }
-  //   this.setState({ temporaryOdds: newOdds });
-  // };
-
-  // // Odds filter based on markets, odds value and date
   // setFilters = (options) => {
-  //   console.log(options);
-  //   let odds = this.state.odds;
-  //   let filteredOdds = [];
-
-  //   if (options.filters === false && options.reset === false) {
-  //     this.setState({ showFilterModal: false, temporaryOdds: odds });
-  //   } else if (options.filters === false && options.reset === true) {
-  //     this.setState({ showFilterModal: false, temporaryOdds: odds });
-  //   } else {
-  //     // First bookmaker
-  //     if (this.state.firstBookmaker !== ("" || "Bookmakers")) {
-  //       if (this.state.firstBookmaker === "MacaoWin") {
-  //         odds = odds.filter(
-  //           (odd) => (odd.book_one || odd.book_two) === "macao"
-  //         );
-  //       }
-  //       if (this.state.firstBookmaker === "SirPlay") {
-  //         odds = odds.filter(
-  //           (odd) => (odd.book_one || odd.book_two) === "sirplay"
-  //         );
-  //       }
-  //     }
-
-  //     // // Filter for full time
-  //     // if (options.allMarkets) {
-  //     //   let oneXTwo = odds.filter((odd) => odd.market === "1X2");
-  //     //   let underOver = odds.filter((odd) => odd.market === "U/O");
-  //     //   let goalNogoal = odds.filter((odd) => odd.market === "GG/NG");
-  //     //   filteredOdds = []
-  //     //     .concat(filteredOdds)
-  //     //     .concat(oneXTwo)
-  //     //     .concat(underOver)
-  //     //     .concat(goalNogoal);
-  //     // } else {
-  //     //   if (options.oneXTwo) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "1X2");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     //   if (options.underOver) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "U/O");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     //   if (options.goalNogoal) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "GG/NG");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     // }
-
-  //     // if (options.allMarketsFirstTime) {
-  //     //   let oneXTwo = odds.filter((odd) => odd.market === "1X2_t1");
-  //     //   let underOver = odds.filter((odd) => odd.market === "U/O_t1");
-  //     //   let goalNogoal = odds.filter((odd) => odd.market === "GG/NG_t1");
-  //     //   filteredOdds = []
-  //     //     .concat(filteredOdds)
-  //     //     .concat(oneXTwo)
-  //     //     .concat(underOver)
-  //     //     .concat(goalNogoal);
-  //     // } else {
-  //     //   if (options.oneXTwoFirstTime) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "1X2_t1");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     //   if (options.underOverFirstTime) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "U/O_t1");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     //   if (options.goalNogoalFirstTime) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "GG/NG_t1");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     // }
-  //     // if (options.allMarketsSecondTime) {
-  //     //   let oneXTwo = odds.filter((odd) => odd.market === "1X2_t2");
-  //     //   let underOver = odds.filter((odd) => odd.market === "U/O_t2");
-  //     //   let goalNogoal = odds.filter((odd) => odd.market === "GG/NG_t2");
-  //     //   filteredOdds = []
-  //     //     .concat(filteredOdds)
-  //     //     .concat(oneXTwo)
-  //     //     .concat(underOver)
-  //     //     .concat(goalNogoal);
-  //     // } else {
-  //     //   if (options.oneXTwoSecondTime) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "1X2_t2");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     //   if (options.underOverSecondTime) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "U/O_t2");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     //   if (options.goalNogoalSecondTime) {
-  //     //     let addOdds = odds.filter((odd) => odd.market === "GG/NG_t2");
-  //     //     filteredOdds = [].concat(filteredOdds).concat(addOdds);
-  //     //   }
-  //     // }
-
-  //     // // Sorting the odds to have the higher rating
-  //     // filteredOdds.sort((a, b) => {
-  //     //   return b.roi - a.roi;
-  //     // });
 
   //     // // Filtering by date and time
   //     // // Deleting odds with no data or time specified
@@ -201,34 +89,19 @@ function OddsMatcher(props) {
   //     // }
   //     odds.map((odd) => console.log(parseFloat(odd.odd_one <= options.maxOdd)));
   //     // Min Odd
-  //     if (!isNaN(options.minOdd)) {
-  //       filteredOdds = filteredOdds.filter(
-  //         (odd) => parseFloat(odd.odd_one) >= parseFloat(options.minOdd)
-  //       );
-  //     }
-  //     // Max Odd
-  //     if (!isNaN(options.maxOdd)) {
-  //       filteredOdds = filteredOdds.filter(
-  //         (odd) => parseFloat(odd.odd_one) >= parseFloat(options.minOdd)
-  //       );
-  //     }
-
-  //     // Filtering by min and max odd
-
-  //     this.setState({ temporaryOdds: filteredOdds, showFilterModal: false });
   //   }
   // };
   useEffect(() => {
-    handleFetchOdds();
+    props.handleFetchOdds();
   }, []);
   return (
     <div>
-      <ModalContainer odds={odds}/>
+      <ModalContainer />
       <div id="oddsmatcher-table-container">
-        {isLoading ? (
+        {props.isLoading ? (
           <Spinner animation="border" variant="info" id="oddsmatcher-spinner" />
         ) : (
-          <OddsmatcherTable odds={temporaryOdds}/>
+          <OddsmatcherTable />
         )}
       </div>
       <Disclaimer />

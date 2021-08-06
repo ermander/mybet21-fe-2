@@ -6,6 +6,7 @@ export const checkComplementary = (
   away,
   bookOne
 ) => {
+  console.log(oddType, history, odds, home, away, bookOne);
   // if(s for normal markets
   if (oddType === ("1" || "x" || "2")) {
     const oneHistory = history["1"];

@@ -11,6 +11,7 @@ import {
 import { connect } from "react-redux";
 import "../styles/_filters-modal.scss";
 import { months } from "../utilities/months";
+import { logos } from "../utilities/bookmakerLogos";
 
 const mapStateToProps = (state) => state;
 const mapDispatchToProps = (dispatch) => ({
@@ -23,18 +24,58 @@ const mapDispatchToProps = (dispatch) => ({
       type: "SET_FILTERS",
       payload: payload,
     }),
+  setFirstBookmaker: (payload) =>
+    dispatch({
+      type: "SET_FIRST_BOOKMAKER",
+      payload: payload,
+    }),
   prova: (options) => dispatch(handleFilters(options)),
 });
 
 const handleFilters = (options) => {
   return async (dispatch) => {
-    const response = await fetch("http://localhost:3004/mybet21/oddsmatcher", {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(options)
-    });
-    const parsedResponse = await response.json();
-    console.log("The response is: ", parsedResponse);
+    try {
+      dispatch({
+        type: "SET_FILTERS",
+        payload: options,
+      });
+      const response = await fetch("http://localhost:3004/mybet21/prova", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(options),
+      });
+      let odds = await response.json();
+      console.log("The response is: ", odds);
+      if (response.ok) {
+        odds = odds.map((odd) => {
+          const bet = 100;
+          const commission = 0.05;
+          const layStake = (odd.odd_one * bet) / (odd.odd_two - commission);
+          const rawRating = (1 - commission) * layStake;
+          const rating = rawRating.toFixed(2);
+          return {
+            ...odd,
+            book_one_image: (
+              <img src={logos[odd.book_one]} alt={logos[odd.book_one]} />
+            ),
+            book_two_image: (
+              <img src={logos[odd.book_two]} alt={logos[odd.book_two]} />
+            ),
+            tableRoi: rating + "%",
+            roi: rating,
+          };
+        });
+        dispatch({
+          type: "SET_MAIN_ODDS",
+          payload: odds,
+        });
+        dispatch({
+          type: "SHOW_FILTER_MODAL",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
 
@@ -68,9 +109,52 @@ function FilterModal(props) {
   const [initialHour, setInitialHour] = useState();
   const [finalHour, setFinalHour] = useState();
 
-  const handleSetFilter = (options) => {
-    console.log(options);
-    props.setFilters(options);
+  const resetFilters = () => {
+    setMarketStatusFullTime({
+      allMarkets: true,
+      oneXTwo: false,
+      underOver: false,
+      goalNoGoal: false,
+    });
+    setMarketStatusFirstTime({
+      allMarketsFirstTime: true,
+      oneXTwoFirstTime: false,
+      underOverFirstTime: false,
+      goalNoGoalFirstTime: false,
+    });
+    setMarketStatusSecondTime({
+      allMarketsSecondTime: true,
+      oneXTwoSecondTime: false,
+      underOverSecondTime: false,
+      goalNoGoalSecondTime: false,
+    });
+    setMinOdd("");
+    setMaxOdd("");
+    firstDateSet();
+    props.setFirstBookmaker("");
+    props.prova({
+      //FULL TIME
+      allMarkets: marketStatusFullTime.allMarkets,
+      oneXTwo: marketStatusFullTime.oneXTwo,
+      underOver: marketStatusFullTime.underOver,
+      goalNoGoal: marketStatusFullTime.goalNoGoal,
+      // FIRST TIME
+      allMarketsFirstTime: marketStatusFirstTime.allMarketsFirstTime,
+      oneXTwoFirstTime: marketStatusFirstTime.oneXTwoFirstTime,
+      underOverFirstTime: marketStatusFirstTime.underOverFirstTime,
+      goalNoGoalFirstTime: marketStatusFirstTime.goalNoGoalFirstTime,
+      // SECOND TIME
+      allMarketsSecondTime: marketStatusSecondTime.allMarketsSecondTime,
+      oneXTwoSecondTime: marketStatusSecondTime.oneXTwoSecondTime,
+      underOverSecondTime: marketStatusSecondTime.underOverSecondTime,
+      goalNoGoalSecondTime: marketStatusSecondTime.goalNoGoalSecondTime,
+      minOdd: minOdd,
+      maxOdd: maxOdd,
+      initialDate: initialDate,
+      finalDate: finalDate,
+      initialHour: initialHour,
+      finalHour: finalHour,
+    });
   };
 
   const firstDateSet = () => {
@@ -99,7 +183,10 @@ function FilterModal(props) {
     }
     const newInitialDate = `${year}-${month}-${day}`;
     const newFinalDate = `${year}-${finalMonth}-${day}`;
-    const newInitialAndFinalHour = `${hour}:${minutes}`;
+    let newInitialAndFinalHour = `${hour}:${minutes}`;
+    if (newInitialAndFinalHour[1] === ":") {
+      newInitialAndFinalHour = `0${hour}:${minutes}`;
+    }
     setInitialDate(newInitialDate);
     setFinalDate(newFinalDate);
     setInitialHour(newInitialAndFinalHour);
@@ -475,12 +562,10 @@ function FilterModal(props) {
                     <InputGroup>
                       <FormControl
                         onChange={(e) =>
-                          setMinOdd({
-                            minOdd: parseFloat(e.currentTarget.value),
-                          })
+                          setMinOdd(parseFloat(e.currentTarget.value))
                         }
                         type="number"
-                        placeholder="Quota Min."
+                        placeholder={"Quota Min: " + minOdd}
                       />
                     </InputGroup>
                   </Col>
@@ -488,12 +573,10 @@ function FilterModal(props) {
                     <InputGroup>
                       <FormControl
                         onChange={(e) =>
-                          setMinOdd({
-                            maxOdd: parseFloat(e.currentTarget.value),
-                          })
+                          setMaxOdd(parseFloat(e.currentTarget.value))
                         }
                         type="number"
-                        placeholder="Quota Max."
+                        placeholder={"Quota Max: " + maxOdd}
                       />
                     </InputGroup>
                   </Col>
@@ -507,8 +590,9 @@ function FilterModal(props) {
             <Col xs={4}>
               <Button
                 variant="success"
-                onClick={ () => props.prova({
-                   //FULL TIME
+                onClick={() =>
+                  props.prova({
+                    //FULL TIME
                     allMarkets: marketStatusFullTime.allMarkets,
                     oneXTwo: marketStatusFullTime.oneXTwo,
                     underOver: marketStatusFullTime.underOver,
@@ -535,7 +619,7 @@ function FilterModal(props) {
                     finalDate: finalDate,
                     initialHour: initialHour,
                     finalHour: finalHour,
-                })
+                  })
                 }
               >
                 Applica
@@ -547,7 +631,7 @@ function FilterModal(props) {
               </Button>
             </Col>
             <Col xs={4}>
-              <Button variant="danger" onClick={() => props.openFilterModal()}>
+              <Button variant="danger" onClick={() => resetFilters()}>
                 Resetta
               </Button>
             </Col>

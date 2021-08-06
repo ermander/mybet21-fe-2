@@ -5,7 +5,6 @@ import thunk from "redux-thunk";
 const initialState = {
   isLoading: true,
   odds: [],
-  temporaryOdds: [],
   history: [],
   firstBookmaker: "",
   filters: {},

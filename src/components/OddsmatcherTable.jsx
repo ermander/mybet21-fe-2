@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useTable, usePagination } from "react-table";
-
+import { connect } from "react-redux";
 const Styles = styled.div`
   padding: 1rem;
   table {
@@ -29,7 +29,7 @@ const Styles = styled.div`
     padding: 0.5rem;
   }
 `;
-
+const mapStateToProps = (state) => state;
 function Table({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
   const {
@@ -207,4 +207,4 @@ function App(props) {
   );
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

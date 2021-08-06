@@ -10,11 +10,6 @@ export default function (state = {}, action) {
         ...state,
         odds: action.payload,
       };
-    case "SET_TEMPORARY_ODDS":
-      return {
-        ...state,
-        temporaryOdds: action.payload,
-      };
     case "SET_HISTORY":
       return {
         ...state,
