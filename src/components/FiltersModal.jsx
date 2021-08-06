@@ -39,7 +39,7 @@ const handleFilters = (options) => {
         type: "SET_FILTERS",
         payload: options,
       });
-      const response = await fetch("http://localhost:3004/mybet21/prova", {
+      const response = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/prova", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(options),

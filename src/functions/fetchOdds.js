@@ -5,7 +5,7 @@ import InitialOdds from "../components/InitialOdds";
 export const fetchOdds = async () => {
   try {
     const response = await fetch(
-      "http://localhost:3004/mybet21/oddsmatcher"
+      "https://odds-and-db-be-server.herokuapp.com/mybet21/oddsmatcher"
     );
     const parsedResponse = await response.json();
     console.log(parsedResponse);
