@@ -27,11 +27,6 @@ const handleSetFirtBookmaker = (options) => {
       allMarketsSecondTime: filters.allMarketsSecondTime,
       initialDate: new Date(`${options.initialDate}, ${options.initialHour}`),
       initialDate: new Date(`${options.finalDate}, ${options.finalHour}`),
-      finalDate: filters.finalDate,
-      finalHour: filters.finalHour,
-      initialDate: filters.initialDate,
-      initialHour: filters.initialHour,
-
       goalNoGoal: filters.goalNoGoal,
       goalNoGoalFirstTime: filters.goalNoGoalFirstTime,
       goalNoGoalSecondTime: filters.goalNoGoalSecondTime,
