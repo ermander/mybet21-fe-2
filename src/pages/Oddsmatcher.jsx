@@ -28,6 +28,17 @@ const mainFetchOdds = () => {
     });
     let odds = await fetchOdds();
     odds = odds.odds;
+    odds = odds.map((odd) => {
+      return {
+        ...odd,
+        initialOdds:
+          odd.complementaryData === undefined ? (
+            "Non Disponibile"
+          ) : (
+            <InitialOdds complementaryData={odd.complementaryData} />
+          ),
+      };
+    });
 
     dispatch({
       type: "SET_MAIN_ODDS",

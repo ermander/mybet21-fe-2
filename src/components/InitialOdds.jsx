@@ -4,7 +4,8 @@ import "../styles/_initial-odds.scss";
 function InitialOdds(props) {
   const [infoType, setInfoType] = useState("");
   useEffect(() => {
-    setInfoType(props.info.infoType);
+    console.log(props.complementaryData)
+    setInfoType(props.complementaryData.infoType);
   }, [infoType]);
 
   if (infoType === "1X2") {
@@ -12,18 +13,18 @@ function InitialOdds(props) {
       <div id="oneXTwo-container">
         <div className="odds-info-container">
           <p>1</p>
-          <p>{props.info.oneHistory}</p>
-          <p>{props.info.one}</p>
+          <p>{props.complementaryData.oneHistory}</p>
+          <p>{props.complementaryData.one}</p>
         </div>
         <div className="odds-info-container">
           <p>X</p>
-          <p>{props.info.xHistory}</p>
-          <p>{props.info.x}</p>
+          <p>{props.complementaryData.xHistory}</p>
+          <p>{props.complementaryData.x}</p>
         </div>
         <div className="odds-info-container">
           <p>2</p>
-          <p>{props.info.twoHistory}</p>
-          <p>{props.info.two}</p>
+          <p>{props.complementaryData.twoHistory}</p>
+          <p>{props.complementaryData.two}</p>
         </div>
       </div>
     );
@@ -32,13 +33,13 @@ function InitialOdds(props) {
       <div className="UO-GGNG-container">
         <div className="odds-info-container">
           <p>Under</p>
-          <p>{props.info.underHistory}</p>
-          <p>{props.info.under}</p>
+          <p>{props.complementaryData.underHistory}</p>
+          <p>{props.complementaryData.under}</p>
         </div>
         <div className="odds-info-container">
           <p>Over</p>
-          <p>{props.info.overHistory}</p>
-          <p>{props.info.over}</p>
+          <p>{props.complementaryData.overHistory}</p>
+          <p>{props.complementaryData.over}</p>
         </div>
       </div>
     );
@@ -47,13 +48,13 @@ function InitialOdds(props) {
       <div className="UO-GGNG-container">
         <div className="odds-info-container">
           <p>Goal</p>
-          <p>{props.info.goalHistory}</p>
-          <p>{props.info.goal}</p>
+          <p>{props.complementaryData.goalHistory}</p>
+          <p>{props.complementaryData.goal}</p>
         </div>
         <div className="odds-info-container">
           <p>NoGoal</p>
-          <p>{props.info.noGoalHistory}</p>
-          <p>{props.info.noGoal}</p>
+          <p>{props.complementaryData.noGoalHistory}</p>
+          <p>{props.complementaryData.noGoal}</p>
         </div>
       </div>
     );

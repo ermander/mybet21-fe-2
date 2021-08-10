@@ -192,7 +192,7 @@ function App(props) {
       },
       {
         Header: "Quota Iniziali",
-        accessor: "quotaIniziale",
+        accessor: "initialOdds",
       },
     ],
     []
