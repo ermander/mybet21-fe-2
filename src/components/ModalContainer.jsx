@@ -26,7 +26,7 @@ const handleSetFirtBookmaker = (options) => {
       allMarketsFirstTime: filters.allMarketsFirstTime,
       allMarketsSecondTime: filters.allMarketsSecondTime,
       initialDate: new Date(`${options.initialDate}, ${options.initialHour}`),
-      initialDate: new Date(`${options.finalDate}, ${options.finalHour}`),
+      finalDate: new Date(`${options.finalDate}, ${options.finalHour}`),
       goalNoGoal: filters.goalNoGoal,
       goalNoGoalFirstTime: filters.goalNoGoalFirstTime,
       goalNoGoalSecondTime: filters.goalNoGoalSecondTime,
@@ -39,11 +39,12 @@ const handleSetFirtBookmaker = (options) => {
       underOverFirstTime: filters.underOverFirstTime,
       underOverSecondTime: filters.underOverSecondTime,
       firstBookmaker: options.firstBookmaker,
+      prova: "prova"
     };
 
     console.log(data);
 
-    const response = await fetch("http://localhost:3004/mybet21/prova", {
+    const response = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/prova", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
