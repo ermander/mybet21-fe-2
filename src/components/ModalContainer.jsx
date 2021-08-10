@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import { connect } from "react-redux";
+// Components
 import FiltersModal from "./FiltersModal";
 import { logos } from "../utilities/bookmakerLogos";
 
@@ -39,16 +40,19 @@ const handleSetFirtBookmaker = (options) => {
       underOverFirstTime: filters.underOverFirstTime,
       underOverSecondTime: filters.underOverSecondTime,
       firstBookmaker: options.firstBookmaker,
-      prova: "prova"
+      prova: "prova",
     };
 
     console.log(data);
 
-    const response = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/prova", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      "https://odds-and-db-be-server.herokuapp.com/mybet21/prova",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }
+    );
     let parsedResponse = await response.json();
     parsedResponse = parsedResponse.map((odd) => {
       const bet = 100;

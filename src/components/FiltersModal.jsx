@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import "../styles/_filters-modal.scss";
 import { months } from "../utilities/months";
 import { logos } from "../utilities/bookmakerLogos";
+import InitialOdds from "./InitialOdds";
 
 const mapStateToProps = (state) => state;
 const mapDispatchToProps = (dispatch) => ({
@@ -39,11 +40,14 @@ const handleFilters = (options) => {
         type: "SET_FILTERS",
         payload: options,
       });
-      const response = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/prova", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(options),
-      });
+      const response = await fetch(
+        "https://odds-and-db-be-server.herokuapp.com/mybet21/prova",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(options),
+        }
+      );
       let odds = await response.json();
       console.log("The response is: ", odds);
       if (response.ok) {
@@ -63,6 +67,12 @@ const handleFilters = (options) => {
             ),
             tableRoi: rating + "%",
             roi: rating,
+            initialOdds:
+              odd.complementaryData === undefined ? (
+                "Non Disponibile"
+              ) : (
+                <InitialOdds complementaryData={odd.complementaryData} />
+              ),
           };
         });
         dispatch({
@@ -151,7 +161,7 @@ function FilterModal(props) {
       minOdd: minOdd,
       maxOdd: maxOdd,
       initialDate: new Date(`${initialDate}, ${initialHour}`),
-      finalDate: new Date(`${finalDate}, ${finalHour}`)
+      finalDate: new Date(`${finalDate}, ${finalHour}`),
     });
   };
 
@@ -179,7 +189,7 @@ function FilterModal(props) {
         if (day === i) day = `0${day}`;
       }
     }
-    console.log(finalMonth)
+    console.log(finalMonth);
     const newInitialDate = `${year}-${month}-${day}`;
     const newFinalDate = `${year}-${finalMonth}-${day}`;
     let newInitialAndFinalHour = `${hour}:${minutes}`;
