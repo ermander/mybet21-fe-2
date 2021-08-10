@@ -5,10 +5,11 @@ import { Spinner } from "react-bootstrap";
 import ModalContainer from "../components/ModalContainer";
 import Disclaimer from "../components/Disclaimer";
 import OddsmatcherTable from "../components/OddsmatcherTable";
+import InitialOdds from "../components/InitialOdds";
 // REDUX
 import { connect } from "react-redux";
 // EXTERNAL FUNCTIONS
-import { fetchOdds, fetchHistory } from "../functions/fetchOdds";
+import { fetchOdds } from "../functions/fetchOdds";
 
 const mapStateToProps = (state) => state;
 const mapDispatchToProps = (dispatch) => ({
@@ -27,6 +28,7 @@ const mainFetchOdds = () => {
     });
     let odds = await fetchOdds();
     odds = odds.odds;
+
     dispatch({
       type: "SET_MAIN_ODDS",
       payload: odds,
