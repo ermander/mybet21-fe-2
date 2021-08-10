@@ -165,22 +165,23 @@ function FilterModal(props) {
     let day = date.getDate();
     let hour = date.getHours();
     let minutes = date.getUTCMinutes();
-    console.log(hour, minutes);
+
     if (month <= 9) {
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i <= 9; i++) {
         if (month === i) month = `0${month}`;
       }
     }
     if (finalMonth <= 9) {
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i <= 9; i++) {
         if (finalMonth === i) finalMonth = `0${finalMonth}`;
       }
     }
     if (day <= 9) {
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i <= 9; i++) {
         if (day === i) day = `0${day}`;
       }
     }
+    console.log(finalMonth)
     const newInitialDate = `${year}-${month}-${day}`;
     const newFinalDate = `${year}-${finalMonth}-${day}`;
     let newInitialAndFinalHour = `${hour}:${minutes}`;

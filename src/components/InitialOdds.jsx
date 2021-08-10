@@ -4,7 +4,6 @@ import "../styles/_initial-odds.scss";
 function InitialOdds(props) {
   const [infoType, setInfoType] = useState("");
   useEffect(() => {
-    console.log(props.complementaryData)
     setInfoType(props.complementaryData.infoType);
   }, [infoType]);
 
