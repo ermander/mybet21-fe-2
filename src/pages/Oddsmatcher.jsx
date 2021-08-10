@@ -52,58 +52,6 @@ const mainFetchOdds = () => {
 };
 
 function OddsMatcher(props) {
-  // setFilters = (options) => {
-
-  //     // // Filtering by date and time
-  //     // // Deleting odds with no data or time specified
-  //     // odds = odds.filter(
-  //     //   (odd) => odd.start_date !== undefined || odd.start_time !== undefined
-  //     // );
-  //     // if (options.startDate !== "") {
-  //     //   const initialDate = new Date(options.startDate);
-  //     //   const finalDate = new Date(options.endDate);
-
-  //     //   if (options.startTime !== "") {
-  //     //     initialDate.setHours(parseInt(options.startTime.split(":")[0]));
-  //     //     initialDate.setMinutes(parseInt(options.startTime.split(":")[1]));
-  //     //   }
-
-  //     //   if (options.endTime !== "") {
-  //     //     finalDate.setHours(parseInt(options.endTime.split(":")[0]));
-  //     //     finalDate.setMinutes(parseInt(options.endTime.split(":")[1]));
-  //     //   }
-  //     //   // Creating a valid date format
-  //     //   odds = odds.map((odd) => {
-  //     //     let date = new Date();
-  //     //     date.setFullYear(
-  //     //       parseInt(odd.start_date.split("/")[2]),
-  //     //       parseInt(odd.start_date.split("/")[1] - 1),
-  //     //       parseInt(odd.start_date.split("/")[0])
-  //     //     );
-  //     //     date.setHours(parseInt(odd.start_time.split(":")[0]));
-  //     //     date.setMinutes(parseInt(odd.start_time.split(":")[0]));
-  //     //     return {
-  //     //       ...odd,
-  //     //       date,
-  //     //     };
-  //     //   });
-  //     //   // Filtering by start date
-  //     //   if (options.startTime !== "") {
-  //     //     odds = odds.filter(
-  //     //       (odd) => odd.date.valueOf() >= initialDate.valueOf()
-  //     //     );
-  //     //   }
-  //     //   if (options.endTime !== "") {
-  //     //     // Filtering by end date
-  //     //     odds = odds.filter(
-  //     //       (odd) => odd.date.valueOf() <= finalDate.valueOf()
-  //     //     );
-  //     //   }
-  //     // }
-  //     odds.map((odd) => console.log(parseFloat(odd.odd_one <= options.maxOdd)));
-  //     // Min Odd
-  //   }
-  // };
   useEffect(() => {
     props.handleFetchOdds();
   }, []);

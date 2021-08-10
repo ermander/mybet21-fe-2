@@ -150,10 +150,8 @@ function FilterModal(props) {
       goalNoGoalSecondTime: marketStatusSecondTime.goalNoGoalSecondTime,
       minOdd: minOdd,
       maxOdd: maxOdd,
-      initialDate: initialDate,
-      finalDate: finalDate,
-      initialHour: initialHour,
-      finalHour: finalHour,
+      initialDate: new Date(`${initialDate}, ${initialHour}`),
+      finalDate: new Date(`${finalDate}, ${finalHour}`)
     });
   };
 
