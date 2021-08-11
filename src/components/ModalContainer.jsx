@@ -20,14 +20,16 @@ const handleSetFirtBookmaker = (options) => {
       type: "SET_MAIN_ODDS",
       payload: [],
     });
-    console.log(options);
+    const initialDate = new Date(options.filters.initialDate);
+    const finalDate = new Date(options.filters.finalDate)
+    console.log(initialDate, finalDate);
     let filters = options.filters;
     let data = {
       allMarkets: filters.allMarkets,
       allMarketsFirstTime: filters.allMarketsFirstTime,
       allMarketsSecondTime: filters.allMarketsSecondTime,
-      initialDate: new Date(`${options.initialDate}, ${options.initialHour}`),
-      finalDate: new Date(`${options.finalDate}, ${options.finalHour}`),
+      initialDate: initialDate,
+      finalDate: finalDate,
       goalNoGoal: filters.goalNoGoal,
       goalNoGoalFirstTime: filters.goalNoGoalFirstTime,
       goalNoGoalSecondTime: filters.goalNoGoalSecondTime,
@@ -45,14 +47,11 @@ const handleSetFirtBookmaker = (options) => {
 
     console.log(data);
 
-    const response = await fetch(
-      "https://odds-and-db-be-server.herokuapp.com/mybet21/prova",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/prova", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
     let parsedResponse = await response.json();
     parsedResponse = parsedResponse.map((odd) => {
       const bet = 100;
@@ -94,10 +93,13 @@ function ModalContainer(props) {
             <Form.Control
               as="select"
               onChange={(e) =>
-                props.setFirstBookmaker({
-                  firstBookmaker: e.currentTarget.value,
-                  filters: props.filters,
-                })
+                props.setFirstBookmaker(
+                  {
+                    firstBookmaker: e.currentTarget.value,
+                    filters: props.filters,
+                  },
+                  console.log(props.filters)
+                )
               }
             >
               <option>Bookmakers</option>

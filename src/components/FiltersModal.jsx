@@ -36,18 +36,25 @@ const mapDispatchToProps = (dispatch) => ({
 const handleFilters = (options) => {
   return async (dispatch) => {
     try {
+      console.log(options);
+      options.initialDate = new Date(
+        `${options.initialDate}, ${options.initialHour}`
+      );
+      options.finalDate = new Date(
+        `${options.finalDate}, ${options.initialHour}`
+      );
+      delete options.initialHour;
+      delete options.finalHour;
+      console.log(options);
       dispatch({
         type: "SET_FILTERS",
         payload: options,
       });
-      const response = await fetch(
-        "https://odds-and-db-be-server.herokuapp.com/mybet21/prova",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(options),
-        }
-      );
+      const response = await fetch("https://odds-and-db-be-server.herokuapp.com/mybet21/prova", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(options),
+      });
       let odds = await response.json();
       console.log("The response is: ", odds);
       if (response.ok) {
@@ -189,7 +196,11 @@ function FilterModal(props) {
         if (day === i) day = `0${day}`;
       }
     }
-    console.log(finalMonth);
+    if (minutes <= 9) {
+      for (let i = 0; i <= 9; i++) {
+        if (minutes === i) minutes = `${minutes}0`;
+      }
+    }
     const newInitialDate = `${year}-${month}-${day}`;
     const newFinalDate = `${year}-${finalMonth}-${day}`;
     let newInitialAndFinalHour = `${hour}:${minutes}`;
